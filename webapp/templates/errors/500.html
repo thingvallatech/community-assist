@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Community Assist{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-16 text-center">
+    <div class="text-6xl mb-6">⚠️</div>
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">
+        {% if lang == 'es' %}Algo Salió Mal{% else %}Something Went Wrong{% endif %}
+    </h1>
+    <p class="text-gray-600 mb-8">
+        {% if lang == 'es' %}
+        Estamos trabajando para solucionar el problema. Por favor intente de nuevo más tarde.
+        {% else %}
+        We're working to fix the issue. Please try again later.
+        {% endif %}
+    </p>
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
+        <p class="text-yellow-800 font-medium">
+            {% if lang == 'es' %}
+            ¿Necesita ayuda ahora? Llame al 211 para hablar con alguien.
+            {% else %}
+            Need help now? Call 211 to speak with someone.
+            {% endif %}
+        </p>
+    </div>
+
+    <a href="{{ url_for('home') }}"
+       class="inline-block px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700">
+        {% if lang == 'es' %}Volver al Inicio{% else %}Back to Home{% endif %}
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}About - Community Assist{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">
+        {% if lang == 'es' %}Acerca de Community Assist{% else %}About Community Assist{% endif %}
+    </h1>
+
+    <div class="prose prose-lg">
+        {% if lang == 'es' %}
+        <p>
+            Community Assist es una herramienta gratuita que ayuda a las personas a encontrar
+            programas de asistencia social para los que pueden calificar. Recopilamos información
+            sobre programas federales, estatales y locales en un solo lugar.
+        </p>
+
+        <h2>Cómo Funciona</h2>
+        <p>
+            Responda algunas preguntas simples sobre su hogar y situación, y le mostraremos
+            programas que podrían ayudarle. Cada programa incluye:
+        </p>
+        <ul>
+            <li>Descripción del programa y beneficios</li>
+            <li>Requisitos de elegibilidad</li>
+            <li>Cómo aplicar</li>
+            <li>Documentos necesarios</li>
+            <li>Información de contacto</li>
+        </ul>
+
+        <h2>Privacidad</h2>
+        <p>
+            Su privacidad es importante para nosotros. <strong>No almacenamos su información personal.</strong>
+            Sus respuestas solo se usan temporalmente para encontrar programas relevantes y no se
+            guardan en nuestros servidores.
+        </p>
+
+        <h2>Aviso Importante</h2>
+        <p>
+            Esta herramienta proporciona solo información. No envía solicitudes ni garantiza
+            elegibilidad para ningún programa. La elegibilidad real es determinada por cada
+            agencia administradora.
+        </p>
+
+        <h2>¿Necesita Ayuda Ahora?</h2>
+        <p>
+            Si necesita asistencia inmediata, llame al <strong>211</strong>. Este servicio está
+            disponible las 24 horas del día, los 7 días de la semana, y puede conectarlo con
+            recursos locales.
+        </p>
+
+        {% else %}
+
+        <p>
+            Community Assist is a free tool that helps people find social assistance programs
+            they may qualify for. We gather information about federal, state, and local
+            programs in one place.
+        </p>
+
+        <h2>How It Works</h2>
+        <p>
+            Answer a few simple questions about your household and situation, and we'll show
+            you programs that could help. Each program includes:
+        </p>
+        <ul>
+            <li>Program description and benefits</li>
+            <li>Eligibility requirements</li>
+            <li>How to apply</li>
+            <li>Required documents</li>
+            <li>Contact information</li>
+        </ul>
+
+        <h2>Privacy</h2>
+        <p>
+            Your privacy is important to us. <strong>We do not store your personal information.</strong>
+            Your answers are only used temporarily to find relevant programs and are not saved
+            on our servers.
+        </p>
+
+        <h2>Important Notice</h2>
+        <p>
+            This tool provides information only. It does not submit applications or guarantee
+            eligibility for any program. Actual eligibility is determined by each administering
+            agency.
+        </p>
+
+        <h2>Need Help Now?</h2>
+        <p>
+            If you need immediate assistance, call <strong>211</strong>. This service is available
+            24 hours a day, 7 days a week, and can connect you with local resources.
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="mt-8 p-6 bg-primary-50 rounded-xl">
+        <h3 class="font-bold text-primary-800 mb-2">
+            {% if lang == 'es' %}Código Abierto{% else %}Open Source{% endif %}
+        </h3>
+        <p class="text-primary-700">
+            {% if lang == 'es' %}
+            Community Assist es un proyecto de código abierto. Vea el código en
+            {% else %}
+            Community Assist is an open source project. View the code on
+            {% endif %}
+            <a href="https://github.com/thingvallatech/community-assist"
+               class="underline hover:text-primary-900" target="_blank">GitHub</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+# Digital Ocean App Platform Specification
+# Deploy with: doctl apps create --spec .do/app.yaml
+
+name: community-assist
+
+services:
+  - name: web
+    github:
+      repo: thingvallatech/community-assist
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile.web
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 30
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: FLASK_ENV
+        scope: RUN_TIME
+        value: production
+      - key: SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: DEFAULT_LANGUAGE
+        scope: RUN_TIME
+        value: en
+      - key: TARGET_STATE
+        scope: RUN_TIME
+        value: FL
+      - key: TARGET_COUNTY
+        scope: RUN_TIME
+        value: Brevard
+      - key: ENABLE_CALCULATOR
+        scope: RUN_TIME
+        value: "true"
+      - key: ENABLE_LOCATOR
+        scope: RUN_TIME
+        value: "true"
+      - key: SQL_DUMP_URL
+        scope: RUN_TIME
+        value: ""
+
+databases:
+  - name: db
+    engine: PG
+    version: "15"
+    size: db-s-dev-database
+    num_nodes: 1
+
+# Optional: Add a worker for scraping jobs
+# workers:
+#   - name: scraper
+#     github:
+#       repo: thingvallatech/community-assist
+#       branch: main
+#     dockerfile_path: Dockerfile
+#     instance_count: 1
+#     instance_size_slug: basic-xxs
+#     envs:
+#       - key: DATABASE_URL
+#         scope: RUN_TIME
+#         value: ${db.DATABASE_URL}
+
+region: nyc

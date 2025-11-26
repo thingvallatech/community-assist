@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block description %}Find social services and assistance programs you may qualify for{% endblock %}">
+
+    <title>{% block title %}Community Assist{% endblock %}</title>
+
+    <!-- Tailwind CSS via CDN (for development - use compiled CSS in production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        crisis: '#dc2626',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Mobile-first touch targets */
+        .touch-target {
+            min-height: 48px;
+            min-width: 48px;
+        }
+
+        /* Selection cards */
+        .selection-card {
+            @apply border-2 border-gray-200 rounded-xl p-4 cursor-pointer transition-all;
+        }
+        .selection-card:hover {
+            @apply border-primary-300 bg-primary-50;
+        }
+        .selection-card.selected {
+            @apply border-primary-500 bg-primary-100;
+        }
+
+        /* Progress steps */
+        .step-indicator {
+            @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium;
+        }
+        .step-indicator.active {
+            @apply bg-primary-500 text-white;
+        }
+        .step-indicator.completed {
+            @apply bg-green-500 text-white;
+        }
+        .step-indicator.pending {
+            @apply bg-gray-200 text-gray-500;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Crisis Banner - Always Visible -->
+    <div class="bg-red-600 text-white text-center py-2 px-4 text-sm">
+        <span class="hidden sm:inline">{{ t('crisis.banner') }}</span>
+        <span class="sm:hidden">🆘 {{ t('footer.call_211') }} | 988 | 911</span>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="{{ url_for('home') }}" class="flex items-center space-x-2">
+                    <span class="text-2xl">🤝</span>
+                    <span class="font-bold text-xl text-gray-800">Community Assist</span>
+                </a>
+
+                <!-- Language Toggle -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex rounded-lg overflow-hidden border border-gray-200">
+                        <a href="?lang=en"
+                           class="px-3 py-1.5 text-sm {{ 'bg-primary-500 text-white' if lang == 'en' else 'bg-white text-gray-600 hover:bg-gray-50' }}">
+                            EN
+                        </a>
+                        <a href="?lang=es"
+                           class="px-3 py-1.5 text-sm {{ 'bg-primary-500 text-white' if lang == 'es' else 'bg-white text-gray-600 hover:bg-gray-50' }}">
+                            ES
+                        </a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="{{ url_for('finder') }}" class="text-gray-600 hover:text-primary-600 font-medium">
+                        {{ t('nav.finder') }}
+                    </a>
+                    <a href="{{ url_for('programs_list') }}" class="text-gray-600 hover:text-primary-600 font-medium">
+                        {{ t('nav.programs') }}
+                    </a>
+                    {% if settings.enable_calculator %}
+                    <a href="{{ url_for('calculator') }}" class="text-gray-600 hover:text-primary-600 font-medium">
+                        {{ t('nav.calculator') }}
+                    </a>
+                    {% endif %}
+                    {% if settings.enable_locator %}
+                    <a href="{{ url_for('locations') }}" class="text-gray-600 hover:text-primary-600 font-medium">
+                        {{ t('nav.locations') }}
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white">
+            <div class="px-4 py-3 space-y-2">
+                <a href="{{ url_for('finder') }}" class="block py-2 px-3 rounded-lg hover:bg-gray-50 font-medium">
+                    🔍 {{ t('nav.finder') }}
+                </a>
+                <a href="{{ url_for('programs_list') }}" class="block py-2 px-3 rounded-lg hover:bg-gray-50 font-medium">
+                    📋 {{ t('nav.programs') }}
+                </a>
+                {% if settings.enable_calculator %}
+                <a href="{{ url_for('calculator') }}" class="block py-2 px-3 rounded-lg hover:bg-gray-50 font-medium">
+                    🧮 {{ t('nav.calculator') }}
+                </a>
+                {% endif %}
+                {% if settings.enable_locator %}
+                <a href="{{ url_for('locations') }}" class="block py-2 px-3 rounded-lg hover:bg-gray-50 font-medium">
+                    📍 {{ t('nav.locations') }}
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- About -->
+                <div>
+                    <h3 class="text-white font-bold mb-3">Community Assist</h3>
+                    <p class="text-sm text-gray-400">
+                        {{ t('footer.disclaimer') }}
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-white font-bold mb-3">Quick Links</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ url_for('finder') }}" class="hover:text-white">{{ t('nav.finder') }}</a></li>
+                        <li><a href="{{ url_for('programs_list') }}" class="hover:text-white">{{ t('nav.programs') }}</a></li>
+                        <li><a href="{{ url_for('about') }}" class="hover:text-white">About</a></li>
+                    </ul>
+                </div>
+
+                <!-- Emergency -->
+                <div>
+                    <h3 class="text-white font-bold mb-3">{{ t('footer.call_211') }}</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>📞 <strong>211</strong> - Social Services (24/7)</li>
+                        <li>📞 <strong>988</strong> - Suicide & Crisis Lifeline</li>
+                        <li>📞 <strong>911</strong> - Emergency</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+                © {{ "now"|e }} Community Assist. Open source project.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

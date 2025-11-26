@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Community Assist - Find Help in Your Community{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- Hero Section -->
+    <section class="text-center py-12 md:py-20">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+            {% if lang == 'es' %}
+            Encuentre Ayuda en Su Comunidad
+            {% else %}
+            Find Help in Your Community
+            {% endif %}
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            {% if lang == 'es' %}
+            Descubra programas de asistencia para los que podría calificar. Comida, vivienda, atención médica y más.
+            {% else %}
+            Discover assistance programs you may qualify for. Food, housing, healthcare, and more.
+            {% endif %}
+        </p>
+
+        <!-- Primary CTA -->
+        <a href="{{ url_for('finder') }}"
+           class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors shadow-lg touch-target">
+            🔍
+            {% if lang == 'es' %}
+            Encontrar Programas Para Mí
+            {% else %}
+            Find Programs For Me
+            {% endif %}
+        </a>
+
+        <p class="mt-4 text-gray-500">
+            {% if lang == 'es' %}
+            Responda algunas preguntas simples • Toma 2-3 minutos
+            {% else %}
+            Answer a few simple questions • Takes 2-3 minutes
+            {% endif %}
+        </p>
+    </section>
+
+    <!-- Stats Section -->
+    {% if stats %}
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+            <div class="text-3xl font-bold text-primary-600">{{ stats.total_programs or 0 }}</div>
+            <div class="text-gray-600 text-sm">
+                {% if lang == 'es' %}Programas{% else %}Programs{% endif %}
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+            <div class="text-3xl font-bold text-red-600">{{ stats.emergency_programs or 0 }}</div>
+            <div class="text-gray-600 text-sm">
+                {% if lang == 'es' %}Recursos de Emergencia{% else %}Emergency Resources{% endif %}
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+            <div class="text-3xl font-bold text-green-600">{{ stats.categories or 0 }}</div>
+            <div class="text-gray-600 text-sm">
+                {% if lang == 'es' %}Categorías{% else %}Categories{% endif %}
+            </div>
+        </div>
+        <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+            <div class="text-3xl font-bold text-purple-600">24/7</div>
+            <div class="text-gray-600 text-sm">
+                {% if lang == 'es' %}Llame al 211{% else %}Call 211{% endif %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Categories Grid -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            {% if lang == 'es' %}Buscar por Categoría{% else %}Browse by Category{% endif %}
+        </h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {% for cat in categories %}
+            <a href="{{ url_for('programs_list', category=cat.id) }}"
+               class="bg-white rounded-xl p-4 text-center hover:shadow-md transition-shadow border border-gray-100">
+                <div class="text-3xl mb-2">{{ cat.icon }}</div>
+                <div class="text-sm font-medium text-gray-700">{{ t(cat.key) }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Emergency Resources -->
+    {% if emergency_programs %}
+    <section class="mb-12">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-red-800 mb-4 flex items-center">
+                🆘
+                {% if lang == 'es' %}Recursos de Emergencia{% else %}Emergency Resources{% endif %}
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                {% for program in emergency_programs %}
+                <a href="{{ url_for('program_detail', program_id=program.id) }}"
+                   class="bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <h3 class="font-bold text-gray-800">
+                        {{ program.program_name_es if lang == 'es' and program.program_name_es else program.program_name }}
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">
+                        {{ (program.description_es if lang == 'es' and program.description_es else program.description)[:100] }}...
+                    </p>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4 text-center">
+                <p class="text-red-700 font-medium">
+                    {% if lang == 'es' %}
+                    ¿Necesita ayuda inmediata? Llame al 211 ahora (disponible 24/7)
+                    {% else %}
+                    Need immediate help? Call 211 now (available 24/7)
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- How It Works -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+            {% if lang == 'es' %}Cómo Funciona{% else %}How It Works{% endif %}
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                    1️⃣
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">
+                    {% if lang == 'es' %}Responda Preguntas{% else %}Answer Questions{% endif %}
+                </h3>
+                <p class="text-gray-600 text-sm">
+                    {% if lang == 'es' %}
+                    Cuéntenos sobre su hogar, ingresos y lo que necesita.
+                    {% else %}
+                    Tell us about your household, income, and what you need.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                    2️⃣
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">
+                    {% if lang == 'es' %}Vea Sus Coincidencias{% else %}See Your Matches{% endif %}
+                </h3>
+                <p class="text-gray-600 text-sm">
+                    {% if lang == 'es' %}
+                    Le mostraremos programas para los que podría calificar.
+                    {% else %}
+                    We'll show you programs you may qualify for.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                    3️⃣
+                </div>
+                <h3 class="font-bold text-gray-800 mb-2">
+                    {% if lang == 'es' %}Aplique{% else %}Apply{% endif %}
+                </h3>
+                <p class="text-gray-600 text-sm">
+                    {% if lang == 'es' %}
+                    Obtenga los pasos para aplicar y los documentos necesarios.
+                    {% else %}
+                    Get steps to apply and documents you'll need.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="bg-primary-600 rounded-2xl p-8 md:p-12 text-center text-white">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">
+            {% if lang == 'es' %}
+            ¿Listo para encontrar ayuda?
+            {% else %}
+            Ready to find help?
+            {% endif %}
+        </h2>
+        <p class="text-primary-100 mb-6 max-w-xl mx-auto">
+            {% if lang == 'es' %}
+            Su información no se guarda. Este es un servicio gratuito para ayudarle a encontrar recursos.
+            {% else %}
+            Your information is not saved. This is a free service to help you find resources.
+            {% endif %}
+        </p>
+        <a href="{{ url_for('finder') }}"
+           class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-primary-600 bg-white rounded-xl hover:bg-gray-100 transition-colors shadow-lg">
+            {% if lang == 'es' %}Comenzar Ahora{% else %}Get Started Now{% endif %}
+        </a>
+    </section>
+
+</div>
+{% endblock %}

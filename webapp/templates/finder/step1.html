@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('finder.step1.title') }} - Community Assist{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+    <!-- Progress Indicator -->
+    <div class="flex items-center justify-center mb-8">
+        <div class="flex items-center space-x-4">
+            <div class="step-indicator active">1</div>
+            <div class="w-12 h-1 bg-gray-200 rounded"></div>
+            <div class="step-indicator pending">2</div>
+            <div class="w-12 h-1 bg-gray-200 rounded"></div>
+            <div class="step-indicator pending">3</div>
+            <div class="w-12 h-1 bg-gray-200 rounded"></div>
+            <div class="step-indicator pending">4</div>
+        </div>
+    </div>
+
+    <!-- Helper Message -->
+    <div class="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6 rounded-r-lg">
+        <p class="text-primary-800">
+            💬 {{ t('finder.step1.intro') }}
+        </p>
+    </div>
+
+    <!-- Question -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        {{ t('finder.step1.who_lives') }}
+    </h2>
+
+    <form id="step1-form" action="{{ url_for('finder', step=2) }}" method="GET">
+        <input type="hidden" name="step" value="2">
+
+        <!-- Household Type Cards -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <label class="selection-card cursor-pointer" data-value="1">
+                <input type="radio" name="household_type" value="single" class="hidden">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">👤</div>
+                    <div class="font-medium">{{ t('finder.household.just_me') }}</div>
+                </div>
+            </label>
+
+            <label class="selection-card cursor-pointer" data-value="2">
+                <input type="radio" name="household_type" value="couple" class="hidden">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">👥</div>
+                    <div class="font-medium">{{ t('finder.household.partner') }}</div>
+                </div>
+            </label>
+
+            <label class="selection-card cursor-pointer" data-value="3">
+                <input type="radio" name="household_type" value="with_children" class="hidden">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">👨‍👩‍👧</div>
+                    <div class="font-medium">{{ t('finder.household.children') }}</div>
+                </div>
+            </label>
+
+            <label class="selection-card cursor-pointer" data-value="4">
+                <input type="radio" name="household_type" value="large_family" class="hidden">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">👨‍👩‍👧‍👦</div>
+                    <div class="font-medium">{{ t('finder.household.family') }}</div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Children Count (conditional) -->
+        <div id="children-count" class="hidden mb-6">
+            <label class="block text-gray-700 font-medium mb-2">
+                {% if lang == 'es' %}¿Cuántos niños menores de 18 años?{% else %}How many children under 18?{% endif %}
+            </label>
+            <div class="flex space-x-3">
+                {% for i in range(1, 5) %}
+                <label class="flex-1">
+                    <input type="radio" name="num_children" value="{{ i }}" class="hidden peer">
+                    <div class="peer-checked:bg-primary-500 peer-checked:text-white bg-gray-100 rounded-lg py-3 text-center font-medium cursor-pointer hover:bg-gray-200 transition-colors">
+                        {{ i }}{% if i == 4 %}+{% endif %}
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Additional Household Members -->
+        <div class="mb-6">
+            <label class="block text-gray-700 font-medium mb-3">
+                {% if lang == 'es' %}¿Hay alguien en su hogar que sea:{% else %}Is anyone in your household:{% endif %}
+            </label>
+            <div class="space-y-3">
+                <label class="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                    <input type="checkbox" name="has_senior" value="true" class="w-5 h-5 text-primary-600 rounded">
+                    <span class="ml-3">
+                        {% if lang == 'es' %}60 años o más{% else %}60 years or older{% endif %}
+                    </span>
+                </label>
+                <label class="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                    <input type="checkbox" name="is_pregnant" value="true" class="w-5 h-5 text-primary-600 rounded">
+                    <span class="ml-3">
+                        {% if lang == 'es' %}Embarazada{% else %}Pregnant{% endif %}
+                    </span>
+                </label>
+                <label class="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                    <input type="checkbox" name="has_disability" value="true" class="w-5 h-5 text-primary-600 rounded">
+                    <span class="ml-3">
+                        {% if lang == 'es' %}Tiene una discapacidad{% else %}Has a disability{% endif %}
+                    </span>
+                </label>
+                <label class="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                    <input type="checkbox" name="is_veteran" value="true" class="w-5 h-5 text-primary-600 rounded">
+                    <span class="ml-3">
+                        {% if lang == 'es' %}Veterano o militar activo{% else %}Veteran or active military{% endif %}
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Info Note -->
+        <div class="bg-gray-50 p-4 rounded-lg mb-6 text-sm text-gray-600">
+            <p>
+                ℹ️
+                {% if lang == 'es' %}
+                El tamaño del hogar nos ayuda a encontrar programas con los requisitos correctos.
+                {% else %}
+                Household size helps us find programs with the right requirements.
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between">
+            <a href="{{ url_for('home') }}"
+               class="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium">
+                {{ t('button.back') }}
+            </a>
+            <button type="submit"
+                    class="px-8 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors touch-target">
+                {{ t('button.continue') }} →
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Handle selection card clicks
+    document.querySelectorAll('.selection-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove selected from all
+            document.querySelectorAll('.selection-card').forEach(c => c.classList.remove('selected'));
+            // Add selected to clicked
+            this.classList.add('selected');
+            // Check the radio
+            this.querySelector('input[type="radio"]').checked = true;
+
+            // Show/hide children count based on selection
+            const value = this.querySelector('input').value;
+            const childrenDiv = document.getElementById('children-count');
+            if (value === 'with_children' || value === 'large_family') {
+                childrenDiv.classList.remove('hidden');
+            } else {
+                childrenDiv.classList.add('hidden');
+            }
+        });
+    });
+
+    // Calculate household size before submit
+    document.getElementById('step1-form').addEventListener('submit', function(e) {
+        const type = document.querySelector('input[name="household_type"]:checked')?.value;
+        const numChildren = document.querySelector('input[name="num_children"]:checked')?.value || 0;
+
+        let size = 1;
+        if (type === 'couple') size = 2;
+        else if (type === 'with_children') size = 1 + parseInt(numChildren);
+        else if (type === 'large_family') size = 2 + parseInt(numChildren);
+
+        // Add hidden input for household size
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'household_size';
+        input.value = size;
+        this.appendChild(input);
+
+        // Add has_children flag
+        if (type === 'with_children' || type === 'large_family') {
+            const childInput = document.createElement('input');
+            childInput.type = 'hidden';
+            childInput.name = 'has_children';
+            childInput.value = 'true';
+            this.appendChild(childInput);
+        }
+    });
+</script>
+{% endblock %}
